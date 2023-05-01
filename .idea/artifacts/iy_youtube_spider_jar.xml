@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="iy-youtube-spider:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/iy_youtube_spider_jar</output-path>
+    <root id="archive" name="iy-youtube-spider.jar">
+      <element id="module-output" name="iy-youtube-spider" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libs/gson-2.9.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
