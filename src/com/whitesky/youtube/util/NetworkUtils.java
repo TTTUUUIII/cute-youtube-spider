@@ -153,6 +153,8 @@ public final class NetworkUtils {
         if (Objects.nonNull(headers)) {
             headers.forEach((k, v) -> connection.setRequestProperty(k, v));
         }
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
         return connection;
     }
 

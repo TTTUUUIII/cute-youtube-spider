@@ -63,15 +63,17 @@ public class CuteSpiderDefaultImpl implements CuteSpider{
         HEADERS.put("user-agent", USER_AGENTS.get(new Random(System.currentTimeMillis()).nextInt(USER_AGENTS.size())));
         HEADERS.put("referer", "https://www.youtube.com");
         httpResponseCallback = new NetworkUtils.HttpRequestCallback() {
-            final ByteArrayOutputStream respOutStream = new ByteArrayOutputStream();
+            private ByteArrayOutputStream byteWriter;
 
             @Override
             public void onBytesResult(int state, byte[] bytes, int offset, int len) throws IOException {
                 if (state != NetworkUtils.RESULT_EOF) {
-                    respOutStream.write(bytes, 0, len);
+                    if (Objects.isNull(byteWriter)) byteWriter = new ByteArrayOutputStream();
+                    byteWriter.write(bytes, 0, len);
                 } else {
-                    respOutStream.close();
-                    html = respOutStream.toString("UTF-8");
+                    byteWriter.close();
+                    html = byteWriter.toString("UTF-8");
+                    byteWriter = null;
                     countDownLatch.countDown();
                 }
             }
@@ -104,9 +106,9 @@ public class CuteSpiderDefaultImpl implements CuteSpider{
         if (Objects.nonNull(html) && !html.isEmpty()) {
             responseContext = html;
             final SearchResponseContext searchResponseContext = GSON.fromJson(responseContext, SearchResponseContext.class);
-            System.out.println(searchResponseContext);
+            if (Objects.nonNull(searchResponseContext)) return new SpiderResult<SearchResponseContext>(SpiderResult.RESULT_OK, searchResponseContext);
         }
-        return null;
+        return new SpiderResult<SearchResponseContext>(SpiderResult.RESULT_ERROR, null);
     }
 
     @Override
@@ -156,7 +158,7 @@ public class CuteSpiderDefaultImpl implements CuteSpider{
     }
 
     private class SearchParams extends NetworkUtils.PostParams {
-        private String query;
+        private final String query;
         private HashMap<String, HashMap<String, String>> context;
 
         public SearchParams(@NotNull String kw) {
@@ -180,6 +182,7 @@ public class CuteSpiderDefaultImpl implements CuteSpider{
 
     private void doRequestAndReadString(String url, NetworkUtils.PostParams params) {
         html = "";
+        responseContext = "";
         countDownLatch = new CountDownLatch(1);
         NetworkUtils.doPost(url, httpResponseCallback, params, HEADERS, httpProxy);
         try {
@@ -192,6 +195,7 @@ public class CuteSpiderDefaultImpl implements CuteSpider{
     private CountDownLatch countDownLatch;
     private void doRequestAndReadString(String url) {
         html = "";
+        responseContext = "";
         countDownLatch = new CountDownLatch(1);
         NetworkUtils.doGet(url, httpResponseCallback, HEADERS, httpProxy);
         try {

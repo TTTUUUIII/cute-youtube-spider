@@ -1,6 +1,7 @@
 import com.whitesky.youtube.cutespider.CuteSpider;
 import com.whitesky.youtube.cutespider.CuteSpiderDefaultImpl;
 import com.whitesky.youtube.cutespider.SpiderResult;
+import com.whitesky.youtube.responsecontext.SearchResponseContext;
 import com.whitesky.youtube.responsecontext.SuggestResponseContext;
 import com.whitesky.youtube.responsecontext.WatchResponseContext;
 
@@ -13,8 +14,8 @@ public class Test {
         final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 10809));
         final CuteSpiderDefaultImpl cuteSpider = new CuteSpiderDefaultImpl(proxy);
 //        testApiSuggest("big bu", cuteSpider);
-        testApiFindVideoById("aqz-KE-bpKQ", cuteSpider);
-//        testApiSearch("big buck bunny", cuteSpider);
+//        testApiFindVideoById("aqz-KE-bpKQ", cuteSpider);
+        testApiSearch("big buck bunny", cuteSpider);
     }
 
     private static void testApiSuggest(String kw, CuteSpider cuteSpider) {
@@ -27,7 +28,12 @@ public class Test {
     }
 
     private static void testApiSearch(String kw, CuteSpider cuteSpider) {
-        cuteSpider.search(kw);
+        final SpiderResult<SearchResponseContext> search = cuteSpider.search(kw);
+        if (search.code == SpiderResult.RESULT_OK) {
+            System.out.println(search.body);
+        }else {
+            System.err.println("No search result.");
+        }
     }
 
     private static void testApiFindVideoById(String videoId, CuteSpider cuteSpider) {
