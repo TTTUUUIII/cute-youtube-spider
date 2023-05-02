@@ -136,7 +136,7 @@ public class CuteSpiderDefaultImpl implements CuteSpider{
         temp[47 % temp.length] = temp[0];
         char[] cipherCharArray = new char[temp.length - 1];
         System.arraycopy(temp, 1, cipherCharArray, 0, cipherCharArray.length);
-        return String.format("%s&%s=%s", url, sp, new String(cipherCharArray));
+        return NetworkUtils.urlDecode(String.format("%s&%s=%s", url, sp, new String(cipherCharArray)));
     }
 
     private String matchResponseContext(String html, byte matchType) {
