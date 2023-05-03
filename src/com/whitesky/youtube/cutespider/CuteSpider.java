@@ -7,7 +7,7 @@ import com.whitesky.youtube.responsecontext.WatchResponseContext;
 public interface CuteSpider {
 
     /**
-     * get some search suggestions form YouTube.
+     * get some search suggestions from YouTube.
      *
      * @param kw
      * @return
@@ -15,7 +15,7 @@ public interface CuteSpider {
     SpiderResult<SuggestResponseContext> suggest(String kw);
 
     /**
-     * search form YouTube.
+     * search from YouTube.
      *
      * @param kw
      * @return
